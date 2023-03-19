@@ -1,0 +1,3 @@
+2020-06-12
+- Shared/ZipStreamWrapper.php (line 84)
+  Mengubah {0} menjadi [0]
