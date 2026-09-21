@@ -1,0 +1,132 @@
+2026-09-21
+- Menyinkronkan source code dengan versi terbaru aplikasi ZYA CBT Public.
+- Menambahkan Dockerfile berbasis PHP 8.4 Apache dengan ekstensi mysqli, PDO MySQL, GD, XML, ZIP, dan mbstring.
+- Menambahkan Docker Compose untuk service aplikasi dan MariaDB 10.4.
+- Menambahkan persistent database melalui bind mount `./database` serta import SQL awal.
+- Menambahkan konfigurasi dependency PHPWord 1.4.0 dan PhpSpreadsheet 1.30.7.
+- Menambahkan adapter kompatibilitas PHPExcel ke PhpSpreadsheet.
+- Memperbaiki kompatibilitas PHP 8.4 pada import Word dengan menggunakan `Element\OLEObject`.
+- Menyiapkan folder cache, log, dan `public/uploads` agar dapat digunakan oleh web server.
+- Menambahkan panduan contributor pada `AGENTS.md`.
+- Memperbaiki dynamic property `CI_DB_mysqli_driver::$failover` yang memicu Deprecated Notice pada PHP 8.4.
+- Menambahkan regression check untuk memastikan notice database tersebut tidak muncul kembali.
+- Menambahkan GitHub Actions untuk membuat GitHub Release otomatis dari push ke branch `main` dan `release/*`.
+- Menambahkan build dan push Docker image otomatis ke GitHub Container Registry (GHCR).
+
+2025-12-25
+- Codeigniter 3.3.0 support php 8.4
+- Perbaikan token_ts
+
+2024-02-20
+- Codeigniter 3.2.0 dev utk php 8.2 masuk ke opsi
+
+2023-09-06
+- Codeigniter 3.1.13
+
+2022-06-02
+- Opsi untuk membatasi hentikan tes dengan minimal waktu tersisa
+- Menambah deteksi browser aktif atau tidak
+
+2021-03-15
+- Update PHPExcel support php8
+
+2021-03-15
+- Berita Acara, default off
+- dompdf 0.8.3
+
+2021-01-18
+- Fix bug
+
+2021-01-08
+- Penambahan tipe soal menjodohkan
+- Update import soal : menambah tipe soal
+- Update Soal : menambah seleksi soal untuk dihapus
+
+2021-01-06
+- Penambahan tipe soal pilihan ganda kompleks
+
+2020-12-07
+- Penambahan fasilitas Cek Peserta
+
+2020-12-05
+- Perbaikan fasilitas export soal
+
+2020-12-03
+- Menambah fitur edit jawaban pada Hasil tes. Tetapi fitur edit jawaban tetap dimatikan.
+  Hanya request dari user saja.
+
+2020-11-28
+- Perbaikan export soal, sql diletakkan dalam file agar lebih ringan
+
+2020-11-26
+- Update plugin youtube di ckeditor
+- Menambah proteksi multilogin
+- Menambah konfigurasi Tutup Tes saat logout
+
+2020-11-08
+- Menambah intro pada tes
+
+2020-10-31
+- Menambah fasilitas import dari word
+- Menambah fasilitas analisis butir soal
+- Menambah info ke peserta
+- Mengupdate PHPExcel untuk php 7.4
+
+2020-05-14
+- menyimpan sesi pada database
+- update codeigniter
+- Menambah kartu peserta
+- Menambah seleksi hasil tes untuk yang belum mengerjakan
+
+2020-02-29
+- Mengubah token agar dapat spesifik untuk suatu TES
+- Menambah kolom keterangan pada data peserta
+
+2020-02-24
+- Mengupdate codeigniter menjadi 3.1.11
+- Session disimpan di database
+
+2019-12-12
+- Mengubah seleksi token untuk setiap user
+
+2019-05-18
+- Token Tes Manual
+
+2019-02-27
+- Fix Rekap Hasil tes
+
+2019-02-17
+- Menambah fasilitas mengelola topik sesuai daftar topik di user
+- Menambah waktu server di dashboard
+- Menambah select2 di modul soal, import dan daftar soal
+
+2019-02-01
+- Penambahan export import soal
+
+2018-12-22
+- Perbaikan PHPExcel di file
+	PHPExcel\Calculation\Functions.php
+  baris ke 574, break dicomment
+  Export sudah bisa di PHP7
+
+2018-12-09
+- Memperbaiki tingkat kesulitan soal
+
+2018-11-15
+- Update codeigniter 3.1.9
+- Perbaikan di Tes_kerjakan untuk pengecekan waktu tes, 
+  menggunakan waktu php yg sebelumnya dari waktu mysql
+
+2018-11-14
+- Menambah fasilitas zoom saat mengerjakan soal
+
+2018-11-07
+- Menambah pilih semua pada Daftar Topik
+- Menambah pilih semua pada Daftar Tes
+
+2018-10-01
+- Merubah modal Hentikan tes
+- Merubah inital-scale Kerjakan Tes
+
+2018-03-26
+- merubah nama tabel

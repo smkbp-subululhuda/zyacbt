@@ -8,9 +8,6 @@
 class Cbt_tes_user_model extends CI_Model{
 	public $table = 'cbt_tes_user';
 	
-	function __construct(){
-        parent::__construct();
-    }
 	
     function save($data){
         $this->db->insert($this->table, $data);
@@ -47,8 +44,9 @@ class Cbt_tes_user_model extends CI_Model{
      * @return     <type>  Number of by status waktu.
      */
     function count_by_status_waktu($tesuser_id){
+		$now = date('Y-m-d H:i:s');
         $this->db->select('COUNT(tesuser_id) AS hasil')
-                 ->where('(tesuser_id="'.$tesuser_id.'" AND tesuser_status="1" AND TIMESTAMPADD(MINUTE, tes_duration_time, tesuser_creation_time)>NOW())')
+                 ->where('(tesuser_id="'.$tesuser_id.'" AND tesuser_status="1" AND TIMESTAMPADD(MINUTE, tes_duration_time, tesuser_creation_time)>"'.$now.'")')
                  ->from($this->table)
                  ->join('cbt_tes', 'cbt_tes_user.tesuser_tes_id = cbt_tes.tes_id');
         return $this->db->get();

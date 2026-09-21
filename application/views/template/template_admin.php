@@ -226,7 +226,7 @@
         <div class="pull-right hidden-xs">
           <b>Version</b> <?php if(!empty($site_version)){ echo $site_version; } ?>
         </div>
-        <strong>&copy; 2020 achmadlutfi.wordpress.com</strong>
+        <strong>&copy; 2026 achmadlutfi.wordpress.com</strong>
       </footer>
 
     </div><!-- ./wrapper -->

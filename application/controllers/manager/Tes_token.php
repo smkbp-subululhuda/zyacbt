@@ -56,6 +56,7 @@ class Tes_token extends Member_Controller {
                 $data['token_user_id'] = $user_id;
                 $data['token_aktif'] = $aktif;
 				$data['token_tes_id'] = $tes_id;
+				$data['token_ts'] = date('Y-m-d H:i:s');
 
         		$this->cbt_tes_token_model->save($data);
         		$i=0;
@@ -88,6 +89,7 @@ class Tes_token extends Member_Controller {
                 $data['token_user_id'] = $user_id;
                 $data['token_aktif'] = $aktif;
 				$data['token_tes_id'] = $tes_id;
+				$data['token_ts'] = date('Y-m-d H:i:s');
 
         		$this->cbt_tes_token_model->save($data);
 				

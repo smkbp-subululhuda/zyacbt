@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 $config['upload_path'] = 'uploads';
 $config['site_name'] = 'Computer Based-Test';
-$config['site_version'] = '2020.10.31';
+$config['site_version'] = '2025.12.25';
 
 /*
 |--------------------------------------------------------------------------
@@ -144,7 +144,9 @@ $config['subclass_prefix'] = 'MY_';
 | Note: This will NOT disable or override the CodeIgniter-specific
 |	autoloading (application/config/autoload.php)
 */
-$config['composer_autoload'] = FALSE;
+$config['composer_autoload'] = file_exists(APPPATH.'vendor/autoload.php')
+	? APPPATH.'vendor/autoload.php'
+	: FALSE;
 
 /*
 |--------------------------------------------------------------------------

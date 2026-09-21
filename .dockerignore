@@ -1,0 +1,5 @@
+.git
+.idea
+.codex
+database/*
+application/vendor

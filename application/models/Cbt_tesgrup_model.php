@@ -8,9 +8,6 @@
 class Cbt_tesgrup_model extends CI_Model{
 	public $table = 'cbt_tesgrup';
 	
-	function __construct(){
-        parent::__construct();
-    }
 	
     function save($data){
         $this->db->insert($this->table, $data);
@@ -77,7 +74,8 @@ class Cbt_tesgrup_model extends CI_Model{
     }
 	
 	function get_datatable($start, $rows, $grup_id){
-		$this->db->where('(tstgrp_grup_id="'.$grup_id.'" AND tes_begin_time<=NOW() AND tes_end_time>=NOW())')
+		$now = date('Y-m-d H:i:s');
+		$this->db->where('(tstgrp_grup_id="'.$grup_id.'" AND tes_begin_time<="'.$now.'" AND tes_end_time>="'.$now.'")')
                  ->from($this->table)
                  ->join('cbt_tes', 'cbt_tesgrup.tstgrp_tes_id = cbt_tes.tes_id')
                  ->order_by('tes_begin_time ASC, tes_nama ASC')
@@ -86,8 +84,9 @@ class Cbt_tesgrup_model extends CI_Model{
 	}
     
     function get_datatable_count($grup_id){
+		$now = date('Y-m-d H:i:s');
 		$this->db->select('COUNT(*) AS hasil')
-                 ->where('(tstgrp_grup_id="'.$grup_id.'" AND tes_begin_time<=NOW() AND tes_end_time>=NOW())')
+                 ->where('(tstgrp_grup_id="'.$grup_id.'" AND tes_begin_time<="'.$now.'" AND tes_end_time>="'.$now.'")')
                  ->join('cbt_tes', 'cbt_tesgrup.tstgrp_tes_id = cbt_tes.tes_id')
                  ->from($this->table);
         return $this->db->get();

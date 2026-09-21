@@ -25,6 +25,7 @@ class Pengaturan_zyacbt extends Member_Controller {
         $this->form_validation->set_rules('zyacbt-nama', 'Nama ZYACBT','required|strip_tags');
         $this->form_validation->set_rules('zyacbt-keterangan', 'Keterangan ZYACBT','required|strip_tags');
 		$this->form_validation->set_rules('zyacbt-link-login', 'Link Login Operator','required|strip_tags');
+		$this->form_validation->set_rules('zyacbt-proteksi-multilogin', 'Proteksi MultiLogin Peserta','required|strip_tags');
 		$this->form_validation->set_rules('zyacbt-mobile-lock-xambro', 'Lock Mobile Exam Browser','required|strip_tags');
 		$this->form_validation->set_rules('zyacbt-informasi', 'Informasi Peserta Tes','required');
         
@@ -40,6 +41,9 @@ class Pengaturan_zyacbt extends Member_Controller {
 			
 			$data['konfigurasi_isi'] = $this->input->post('zyacbt-mobile-lock-xambro', true);
 			$this->cbt_konfigurasi_model->update('konfigurasi_kode', 'cbt_mobile_lock_xambro', $data);
+			
+			$data['konfigurasi_isi'] = $this->input->post('zyacbt-proteksi-multilogin', true);
+			$this->cbt_konfigurasi_model->update('konfigurasi_kode', 'proteksi_multilogin', $data);
 			
 			$data['konfigurasi_isi'] = $this->input->post('zyacbt-informasi', true);
 			$this->cbt_konfigurasi_model->update('konfigurasi_kode', 'cbt_informasi', $data);
@@ -84,6 +88,12 @@ class Pengaturan_zyacbt extends Member_Controller {
 		$data['mobile_lock_xambro'] = 'ya';
 		if($query->num_rows()>0){
 			$data['mobile_lock_xambro'] = $query->row()->konfigurasi_isi;
+		}
+		
+		$query = $this->cbt_konfigurasi_model->get_by_kolom_limit('konfigurasi_kode', 'proteksi_multilogin', 1);
+		$data['proteksi_multilogin'] = 'ya';
+		if($query->num_rows()>0){
+			$data['proteksi_multilogin'] = $query->row()->konfigurasi_isi;
 		}
 		
 		echo json_encode($data);

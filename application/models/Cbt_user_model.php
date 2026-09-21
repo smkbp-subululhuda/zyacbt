@@ -8,10 +8,6 @@
 class Cbt_user_model extends CI_Model{
 	public $table = 'cbt_user';
 	
-	function __construct(){
-        parent::__construct();
-    }
-	
     function save($data){
         $this->db->insert($this->table, $data);
     }
@@ -29,6 +25,13 @@ class Cbt_user_model extends CI_Model{
     function count_by_kolom($kolom, $isi){
         $this->db->select('COUNT(*) AS hasil')
                  ->where($kolom, $isi)
+                 ->from($this->table);
+        return $this->db->get();
+    }
+	
+	function count_by_login($username){
+        $this->db->select('COUNT(*) AS hasil')
+                 ->where('(user_name="'.$username.'" AND user_login=1 AND user_login_date=DATE(NOW()))')
                  ->from($this->table);
         return $this->db->get();
     }
@@ -82,6 +85,29 @@ class Cbt_user_model extends CI_Model{
         }
 		$this->db->select('COUNT(*) AS hasil')
                  ->where('('.$kolom.' LIKE "%'.$isi.'%" '.$query.')')
+                 ->from($this->table);
+        return $this->db->get();
+	}
+	
+	function get_datatable_resetlogin($start, $rows, $kolom, $isi, $group){
+        $query = '';
+        if($group!='semua'){
+            $query = 'AND user_grup_id='.$group;
+        }
+		$this->db->where('('.$kolom.' LIKE "%'.$isi.'%" '.$query.' AND (user_login=1 AND DATE(user_login_date)=DATE(NOW())))')
+                 ->from($this->table)
+				 ->order_by($kolom, 'ASC')
+                 ->limit($rows, $start);
+        return $this->db->get();
+	}
+    
+    function get_datatable_resetlogin_count($kolom, $isi, $group){
+        $query = '';
+        if($group!='semua'){
+            $query = 'AND user_grup_id='.$group;
+        }
+		$this->db->select('COUNT(*) AS hasil')
+                 ->where('('.$kolom.' LIKE "%'.$isi.'%" '.$query.' AND (user_login=1 AND DATE(user_login_date)=DATE(NOW())))')
                  ->from($this->table);
         return $this->db->get();
 	}
@@ -173,6 +199,45 @@ class Cbt_user_model extends CI_Model{
 		if(!empty($keterangan)){
 			$sql = $sql.' AND user_detail LIKE "%'.$keterangan.'%"';
 		}
+
+		$this->db->select('COUNT(*) AS hasil')
+                 ->where('( '.$sql.' )')
+                 ->join('cbt_user_grup', 'cbt_user.user_grup_id = cbt_user_grup.grup_id')
+				 ->join('cbt_tesgrup', 'cbt_tesgrup.tstgrp_grup_id = cbt_user_grup.grup_id')
+                 ->join('cbt_tes', 'cbt_tesgrup.tstgrp_tes_id = cbt_tes.tes_id')
+				 ->join('cbt_tes_user', '(cbt_tes_user.tesuser_tes_id = cbt_tes.tes_id) AND (cbt_tes_user.tesuser_user_id = cbt_user.user_id)', 'left')
+                 ->from($this->table);
+        return $this->db->get();
+	}
+	
+	/**
+	* datatable untuk cek_peserta yang belum mengerjakan
+	*
+	*/
+	function get_datatable_cekpeserta($start, $rows, $tes_id, $grup_id, $search){
+        $sql = 'tesuser_id IS NULL AND user_firstname LIKE "%'.$search.'%"';
+		
+        $sql = $sql.' AND tes_id="'.$tes_id.'" AND user_grup_id="'.$grup_id.'"';
+        $order = 'user_firstname ASC';
+		
+
+		$this->db->select('cbt_tes.*,cbt_user_grup.grup_nama, cbt_tes.*, cbt_user.*')
+                 ->where('( '.$sql.' )')
+                 ->from($this->table)
+                 ->join('cbt_user_grup', 'cbt_user.user_grup_id = cbt_user_grup.grup_id')
+				 ->join('cbt_tesgrup', 'cbt_tesgrup.tstgrp_grup_id = cbt_user_grup.grup_id')
+                 ->join('cbt_tes', 'cbt_tesgrup.tstgrp_tes_id = cbt_tes.tes_id')
+				 ->join('cbt_tes_user', '(cbt_tes_user.tesuser_tes_id = cbt_tes.tes_id) AND (cbt_tes_user.tesuser_user_id = cbt_user.user_id)', 'left')
+				 ->order_by($order)
+                 ->limit($rows, $start);
+        return $this->db->get();
+	}
+    
+    function get_datatable_cekpeserta_count($tes_id, $grup_id, $search){
+        $sql = 'tesuser_id IS NULL AND user_firstname LIKE "%'.$search.'%"';
+		
+        $sql = $sql.' AND tes_id="'.$tes_id.'" AND user_grup_id="'.$grup_id.'"';
+        $order = 'user_firstname ASC';
 
 		$this->db->select('COUNT(*) AS hasil')
                  ->where('( '.$sql.' )')

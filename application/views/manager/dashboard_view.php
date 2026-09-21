@@ -22,7 +22,7 @@
             Teruntuk Putri kami tercinta. Asyfiya Aniqa Putri, 28 Februari 2018 – 1 Maret 2018
         </div><!-- /.box-body -->
     </div><!-- /.box -->
-    <div class="box box-primary collapsed-box">
+    <div class="box box-primary">
         <div class="box-header with-border">
             <h3 class="box-title">Perjanjian Penggunaan</h3>
             <div class="box-tools pull-right">
@@ -36,8 +36,9 @@
                     <ol>
                         <li>Tidak mengubah Nama Aplikasi Ujian Online <b>ZYA CBT</b> menjadi nama aplikasi lain</li>
                         <li>Tidak mengubah footer yang menunjukkan alamat website Aplikasi Ujian Online ZYA CBT</li>
-                        <li>Tidak menjual Aplikasi Ujian Online ZYA CBT. Tetapi anda diperbolehkan untuk mengambil keuntungan dari jasa proses instalasi, konsultasi dan lain sebagainya yang berkaitan dengan Aplikasi Ujian Online ZYA CBT</li>
-                        <li>Tidak menhapus tribute dan Perjanjian Penggunaan</li>
+                        <li>Tidak menjual Aplikasi Ujian Online ZYA CBT</li>
+						<li>Tidak mengambil keuntungan dari Aplikasi Ujian Online ZYA CBT tanpa ijin</li>
+                        <li>Tidak menghapus tribute dan Perjanjian Penggunaan</li>
                     </ol>
                     Semoga Aplikasi Ujian Online ZYA CBT dapat bermanfaat untuk kita semua.
                 </dd>
@@ -59,6 +60,10 @@
                     <b><u>Waktu Server</u></b>
                     <br />
                     <b><?php if(!empty($waktu_server)){ echo $waktu_server; } ?></b>
+                    <br />
+					<u>Timezone</u>
+                    <br />
+                    <b><?php if(!empty($timezone)){ echo $timezone; } ?></b>
                     <br />
                     Pastikan waktu server sesuai dengan waktu saat ini. Jika ada perbedaan, cek timezone server dan timezone di konfigurasi PHP.
                 </div>
@@ -93,7 +98,6 @@
                 <dd>
                 	Kelompok Data Modul digunakan untuk menambah modul, topik, dan soal. Serta digunakan untuk mengatur file dengan memanfaatkan File Manager.
                 	<ol>
-                		<li>Modul</li>
                 		<li>Topik</li>
                 		<li>Soal</li>
                 		<li>Import Soal Word</li>
@@ -110,6 +114,7 @@
                 		<li>Daftar Peserta</li>
                 		<li>Import Data Peserta</li>
 						<li>Cetak Kartu</li>
+						<li>Reset Login</li>
                 	</ol>
                 <dt>Data Tes</dt>
                 <dd>

@@ -75,6 +75,7 @@ if (!defined('PHPEXCEL_ROOT')) {
  * @package		PHPExcel_Reader_Excel5
  * @copyright	Copyright (c) 2006 - 2012 PHPExcel (http://www.codeplex.com/PHPExcel)
  */
+#[AllowDynamicProperties]
 class PHPExcel_Reader_Excel5 implements PHPExcel_Reader_IReader
 {
 	// ParseXL definitions

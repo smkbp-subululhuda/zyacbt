@@ -3,7 +3,7 @@
 /**
  * Timezone untuk Asia/jakarta
  */
-date_default_timezone_set('Asia/Jakarta');
+//date_default_timezone_set('Asia/Jakarta');
 
 /**
  * CodeIgniter

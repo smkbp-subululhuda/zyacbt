@@ -57,6 +57,11 @@ class Tes_dashboard extends Tes_Controller {
 			$query_info = $query_info->row();
 			$data['informasi'] = $query_info->konfigurasi_isi;
 		}
+		
+		// Menghapus token tes jika terisi
+		if($this->access_tes->is_token()){
+			$this->access_tes->remove_token();
+		}
 
         $this->template->display_tes($this->kelompok.'/tes_dashboard_view', 'Dashboard', $data);
     }
@@ -193,6 +198,9 @@ class Tes_dashboard extends Tes_Controller {
 						}
 					}
 					if($is_ok==1){
+						// Memasukkan token ke session
+						$this->session->set_userdata('cbt_tes_token', $token);
+							
 						// Mengecek apakah test mempunyai data soal
 						if($this->cbt_tes_topik_set_model->count_by_kolom('tset_tes_id', $query_tes->tes_id)->row()->hasil>0){
 							// Memulai transaction mysql

@@ -5,6 +5,7 @@
 * achmdlutfi@gmail.com
 * achmadlutfi.wordpress.com
 */
+#[AllowDynamicProperties]
 class Access_tes{
 	function __construct(){
 		$this->CI =& get_instance();
@@ -29,10 +30,12 @@ class Access_tes{
 		$result = $this->users_model->get_by_username($username);
 		if($result){
 			if($password === $result->user_password){
+				/*
 				$this->CI->session->set_userdata('cbt_tes_user_id',$result->user_name);
                 $this->CI->session->set_userdata('cbt_tes_nama',stripslashes($result->user_firstname));
                 $this->CI->session->set_userdata('cbt_tes_group',$result->grup_nama);
                 $this->CI->session->set_userdata('cbt_tes_group_id',$result->grup_id);
+				*/
 				return 1;
 			}else{
 				return 2;
@@ -65,13 +68,23 @@ class Access_tes{
 		return $this->CI->session->userdata('cbt_tes_group_id');
 	}
 	
+	function is_token(){
+		return (($this->CI->session->userdata('cbt_tes_token')) ? TRUE : FALSE);
+	}
+	
+	function remove_token(){
+		$this->CI->session->unset_userdata('cbt_tes_token');
+	}
+	
 	/**
 	 * logout
 	 */
 	function logout(){
+		$this->CI->session->unset_userdata('cbt_tes_tanda');
 		$this->CI->session->unset_userdata('cbt_tes_user_id');
 		$this->CI->session->unset_userdata('cbt_tes_nama');
 		$this->CI->session->unset_userdata('cbt_tes_group_id');
 		$this->CI->session->unset_userdata('cbt_tes_group');
+		$this->CI->session->unset_userdata('cbt_tes_token');
 	}
 }

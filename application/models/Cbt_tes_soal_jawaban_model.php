@@ -2,9 +2,6 @@
 class Cbt_tes_soal_jawaban_model extends CI_Model{
 	public $table = 'cbt_tes_soal_jawaban';
 	
-	function __construct(){
-        parent::__construct();
-    }
 	
     function save($data){
         $this->db->insert($this->table, $data);

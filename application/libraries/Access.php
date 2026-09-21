@@ -5,6 +5,7 @@
 * achmdlutfi@gmail.com
 * achmadlutfi.wordpress.com
 */
+#[AllowDynamicProperties]
 class Access{
 	public $user;
 	

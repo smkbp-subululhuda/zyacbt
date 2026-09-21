@@ -85,7 +85,7 @@
 			?>
         </div>
         <div class="container">
-          <strong>&copy; 2020 achmadlutfi.wordpress.com</strong>
+          <strong>&copy; 2026 achmadlutfi.wordpress.com</strong>
         </div><!-- /.container -->
       </footer>
     </div><!-- ./wrapper -->

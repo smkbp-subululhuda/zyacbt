@@ -88,7 +88,7 @@ class Modul_import extends Member_Controller {
 
 	        if(!empty($_FILES['userfile']['name'])){
 		    	$config['upload_path'] = $posisi;
-			    $config['allowed_types'] = 'xls|xlsx';
+			    $config['allowed_types'] = 'xlsx';
 			    $config['max_size']	= '0';
 			    $config['overwrite'] = true;
 			    $config['file_name'] = $_FILES['userfile']['name'];

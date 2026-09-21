@@ -66,6 +66,18 @@
 							</div>
 						</div>
 						<div class="form-group">
+							<label class="col-sm-4 control-label">Proteksi MultiLogin Peserta Tes</label>
+                            <div class="col-sm-8">
+								<select class="form-control input-sm" id="zyacbt-proteksi-multilogin" name="zyacbt-proteksi-multilogin">
+									<option value="tidak">Tidak</option>
+                                    <option value="ya">Ya</option>
+								</select>
+                                <p class="help-block">
+									Proteksi MultiLogin Peserta Tes. Jika diaktifkan, maka user tidak bisa login didua perangkat. Jika user tidak logout, maka harus di lakukan Reset Login pada user tersebut.
+								</p>
+							</div>
+						</div>
+						<div class="form-group">
 							<label class="col-sm-4 control-label">Informasi ke Peserta Tes</label>
                             <div class="col-sm-8">
 								<input type="hidden" name="zyacbt-informasi" id="zyacbt-informasi" >
@@ -96,6 +108,7 @@
                 $('#zyacbt-keterangan').val(data.cbt_keterangan);
                 $('#zyacbt-link-login').val(data.link_login_operator);
 				$('#zyacbt-mobile-lock-xambro').val(data.mobile_lock_xambro);
+				$('#zyacbt-proteksi-multilogin').val(data.proteksi_multilogin);
 				$('#zyacbt_informasi').val(data.cbt_informasi);
 				$('#zyacbt-informasi').val('');
             }

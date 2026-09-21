@@ -1,0 +1,4 @@
+# Data MariaDB dibuat oleh Docker dan tidak disimpan di Git.
+*
+!.gitignore
+!.gitkeep

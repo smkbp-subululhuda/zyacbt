@@ -87,7 +87,14 @@
                             $("#modal-proses").modal('hide');
                             $('#username').focus();   
           		        }
-         			}
+         			},
+					error: function(request, status, errorThrown) {
+						$("#modal-proses").modal('hide');
+						// There's been an error, do something with it!
+						// Only use status and errorThrown.
+						// Chances are request will not have anything in it.
+						$('#form-pesan').html(pesan_err("Terjadi Kesalahan Sistem. Silahkan hubungi Administrator.<br/> "+errorThrown));
+					}
       		});
             
       		return false;

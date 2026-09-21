@@ -5,9 +5,6 @@
 class Cbt_tes_topik_set_model extends CI_Model{
 	public $table = 'cbt_tes_topik_set';
 	
-	function __construct(){
-        parent::__construct();
-    }
 	
     function save($data){
         $this->db->insert($this->table, $data);

@@ -1,0 +1,84 @@
+name: Automatic Release
+
+on:
+  push:
+    branches:
+      - main
+      - 'release/*'
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Read latest changelog entry
+        id: changelog
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          test -s changelog.txt
+
+          release_date="$(sed -n '1p' changelog.txt | tr -d '\r')"
+          if [[ ! "$release_date" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
+            echo "Format tanggal changelog tidak valid: $release_date" >&2
+            exit 1
+          fi
+
+          awk '{ sub(/\r$/, "") } NR == 1 { next } /^$/ { exit } { print }' \
+            changelog.txt > release-notes.md
+
+          if ! grep -q '[^[:space:]]' release-notes.md; then
+            echo "Entri terbaru changelog tidak memiliki deskripsi." >&2
+            exit 1
+          fi
+
+          release_tag="v${release_date//-/.}-build.${GITHUB_RUN_NUMBER}"
+          echo "date=$release_date" >> "$GITHUB_OUTPUT"
+          echo "tag=$release_tag" >> "$GITHUB_OUTPUT"
+
+      - name: Login ke GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate Docker image metadata
+        id: docker_meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository }}
+          tags: |
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
+            type=ref,event=branch
+            type=sha,prefix=sha-
+            type=raw,value=${{ steps.changelog.outputs.tag }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.docker_meta.outputs.tags }}
+          labels: ${{ steps.docker_meta.outputs.labels }}
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_DATE: ${{ steps.changelog.outputs.date }}
+          RELEASE_TAG: ${{ steps.changelog.outputs.tag }}
+        run: |
+          gh release create "$RELEASE_TAG" \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "$GITHUB_SHA" \
+            --title "Release $RELEASE_DATE" \
+            --notes-file release-notes.md

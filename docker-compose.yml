@@ -1,0 +1,42 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: zyacbt
+      DB_USERNAME: zyacbt
+      DB_PASSWORD: zyacbt
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - .:/var/www/html
+      - app_vendor_v2:/var/www/html/application/vendor
+      - app_cache:/var/www/html/application/cache
+      - app_logs:/var/www/html/application/logs
+
+  db:
+    image: mariadb:10.4
+    environment:
+      MYSQL_DATABASE: zyacbt
+      MYSQL_USER: zyacbt
+      MYSQL_PASSWORD: zyacbt
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./database:/var/lib/mysql
+      - ./zyacbt-public-2024-05-05-tanpa-database.sql:/docker-entrypoint-initdb.d/01-zyacbt.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p$${MYSQL_ROOT_PASSWORD} --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  app_vendor_v2:
+  app_cache:
+  app_logs:

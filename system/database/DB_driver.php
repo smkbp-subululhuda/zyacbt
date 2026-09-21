@@ -175,6 +175,13 @@ abstract class CI_DB_driver {
 	public $db_debug		= FALSE;
 
 	/**
+	 * Database connection failover settings
+	 *
+	 * @var	array
+	 */
+	public $failover		= array();
+
+	/**
 	 * Benchmark time
 	 *
 	 * @var	int

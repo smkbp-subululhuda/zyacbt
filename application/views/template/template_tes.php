@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <title><?php if(!empty($site_name)){ echo $site_name; } ?> | <?php echo $title; ?></title>
     <!-- Tell the browser to be responsive to screen width -->
-    <meta content='width=device-width, initial-scale=0.9, minimum-scale=0.1, maximum-scale=10, user-scalable=yes' name='viewport'>
-	<meta name="description" content="Aplikasi Ujian Online ZAYCBT">
-	<meta name="keywords" content="Aplikasi Ujian Online ZYACBT">
-	<meta name="author" content="Achmad Lutfi">
+    <meta content='width=device-width, initial-scale=0.9, minimum-scale=0.1, maximum-scale=10, user-scalable=yes' name='viewport' />
+	<meta name="description" content="Aplikasi Ujian Online ZAYCBT" />
+	<meta name="keywords" content="Aplikasi Ujian Online ZYACBT" />
+	<meta name="author" content="Achmad Lutfi" />
+    <meta name="google" value="notranslate" />
     <!-- Bootstrap 3.3.4 -->
     <link href="<?php echo base_url(); ?>public/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <!-- Font Awesome Icons -->
@@ -152,7 +153,7 @@
           <?php if(!empty($nama)){ echo $nama; } ?> | <strong> <a href="<?php echo site_url(); ?>/welcome/logout" >Log out</a></strong>
         </div>
         <div class="container">
-          <strong>&copy; 2020 achmadlutfi.wordpress.com</strong>
+          <strong>&copy; 2026 achmadlutfi.wordpress.com</strong>
         </div><!-- /.container -->
       </footer>
     </div><!-- ./wrapper -->

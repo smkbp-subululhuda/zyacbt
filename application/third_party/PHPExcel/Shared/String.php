@@ -573,15 +573,24 @@ class PHPExcel_Shared_String
 	public static function Substring($pValue = '', $pStart = 0, $pLength = 0)
 	{
 		if (self::getIsIconvEnabled()) {
-			return iconv_substr($pValue, $pStart, $pLength, 'UTF-8');
+			if($pValue != null){
+				return iconv_substr($pValue, $pStart, $pLength, 'UTF-8');
+			}
 		}
 
 		if (self::getIsMbstringEnabled()) {
-			return mb_substr($pValue, $pStart, $pLength, 'UTF-8');
+			if($pValue != null){
+				return mb_substr($pValue, $pStart, $pLength, 'UTF-8');
+			}
 		}
 
 		// else substr
-		return substr($pValue, $pStart, $pLength);
+		if($pValue != null){
+			return substr($pValue, $pStart, $pLength);
+		}else{
+			return $pValue;
+		}
+		
 	}
 
 

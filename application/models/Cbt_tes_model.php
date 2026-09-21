@@ -2,9 +2,6 @@
 class Cbt_tes_model extends CI_Model{
 	public $table = 'cbt_tes';
 	
-	function __construct(){
-        parent::__construct();
-    }
 	
     function save($data){
         $this->db->insert($this->table, $data);
@@ -41,7 +38,8 @@ class Cbt_tes_model extends CI_Model{
     }
 	
 	function get_by_now(){
-        $this->db->where('(DATE(tes_begin_time)<=DATE(NOW()) AND DATE(tes_end_time)>=DATE(NOW()))')
+		$now = date('Y-m-d H:i:s');
+        $this->db->where('(DATE(tes_begin_time)<=DATE("'.$now.'") AND DATE(tes_end_time)>=DATE("'.$now.'"))')
                  ->from($this->table)
 				 ->order_by('tes_id', 'ASC');
         return $this->db->get();

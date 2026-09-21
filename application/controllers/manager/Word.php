@@ -105,7 +105,7 @@ class Word extends Member_Controller {
 							echo '<br />';
 						}else if($textrun instanceof PhpOffice\PhpWord\Element\Image){
 							echo 'Gambar';
-						}else if($element instanceof PhpOffice\PhpWord\Element\Object){
+                }else if($element instanceof PhpOffice\PhpWord\Element\OLEObject){
 							echo 'Object';
 						}else{
 							echo 'lainnya';

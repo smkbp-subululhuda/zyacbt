@@ -74,7 +74,45 @@ class Welcome extends CI_Controller {
                 $status['error'] = validation_errors();
 			}else{
 				//Jika sukses
-                $status['status'] = 1;
+				$username = $this->input->post('username',TRUE);
+				
+				//Cek proteksi_multilogin aktif
+				$hasil = 1;
+				$query_konfigurasi = $this->cbt_konfigurasi_model->get_by_kolom_limit('konfigurasi_kode', 'proteksi_multilogin', 1);
+				if($query_konfigurasi->num_rows()>0){
+					if($query_konfigurasi->row()->konfigurasi_isi=='ya'){
+						//Jika aktif, cek apakah user sudah login
+						if($this->cbt_user_model->count_by_login($username)->row()->hasil>0){
+							// User terdeteksi login, info kalau user sudah login diperangkat lain
+							$hasil = 0;
+						}else{
+							// User belum terdeteksi login, update user_login dan user_login_date
+							$data['user_login']=1;
+							$data['user_login_date']=date('Y-m-d');;
+							
+							if(!empty($username)){
+								$this->cbt_user_model->update('user_name', $username, $data);
+							}				
+						}
+					}
+				}
+				
+				if($hasil==1){
+					$result = $this->cbt_user_model->get_by_username($username);
+					
+					// Menyimpan session
+					$tanda = '@ZYACBT@';
+					$this->session->set_userdata('cbt_tes_tanda',$tanda.$result->user_name.$tanda);
+					$this->session->set_userdata('cbt_tes_user_id',$result->user_name);
+					$this->session->set_userdata('cbt_tes_nama',stripslashes($result->user_firstname));
+					$this->session->set_userdata('cbt_tes_group',$result->grup_nama);
+					$this->session->set_userdata('cbt_tes_group_id',$result->grup_id);
+					
+					$status['status'] = 1;
+				}else{
+					$status['status'] = 0;
+					$status['error'] = 'User terdeteksi masih Login. Silahkan hubungi Petugas.';
+				}
 			}
         }else{
             $status['status'] = 0;
@@ -84,6 +122,13 @@ class Welcome extends CI_Controller {
     }
     
     function logout(){
+		//Update user_login menjadi 0
+		$data['user_login']=0;
+		$username = $this->access_tes->get_username();
+		if(!empty($username)){
+			$this->cbt_user_model->update('user_name', $username, $data);
+		}
+		
 		$this->access_tes->logout();
 		redirect('welcome');
 	}

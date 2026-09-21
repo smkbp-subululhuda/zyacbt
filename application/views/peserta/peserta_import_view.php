@@ -29,7 +29,7 @@
     					<div class="box-title">Import Peserta</div>
     					<div class="box-tools pull-right">
 							<div class="dropdown pull-right">
-								<a href="<?php echo base_url(); ?>public/form/form-data-siswa.xls">Download Form Import Siswa</a>
+								<a href="<?php echo base_url(); ?>public/form/form-data-siswa.xlsx">Download Form Import Siswa</a>
     						</div>
     					</div>
                     </div><!-- /.box-header -->
@@ -44,8 +44,7 @@
                         </span>
                         <div class="form-group">
                             <input type="file" id="userfile" name="userfile">
-                            <p class="help-block">File Excel yang didukung adalah Microsoft Excel 2003 dan Microsoft Excel 2007</p>
-                            <p class="help-block">SAVE AS ke Office 2007 jika gagal mengupload data dalam format Office 2003</p>
+                            <p class="help-block">File Excel yang didukung adalah Microsoft Excel 2007</p>
                         </div>
                         
                         <?php if(!empty($hasil)){ echo $hasil; } ?>

@@ -28,7 +28,7 @@ class Peserta_import extends Member_Controller {
 
         if(!empty($_FILES['userfile']['name'])){
 			$config['upload_path'] = './public/uploads/';
-	        $config['allowed_types'] = 'xls|xlsx';
+	        $config['allowed_types'] = 'xlsx';
 	        $config['max_size']	= '0';
 	        $config['overwrite'] = true;
 	        $config['file_name'] = $_FILES['userfile']['name'];
@@ -71,7 +71,7 @@ class Peserta_import extends Member_Controller {
                 $kosong=0;
                 $kolom1 = $worksheet->getCellByColumnAndRow(1, $row)->getValue();//username
                 $kolom2 = $worksheet->getCellByColumnAndRow(2, $row)->getValue();//password
-                $kolom3 = ucwords(addslashes($worksheet->getCellByColumnAndRow(3, $row)->getValue()));//nama
+                $kolom3 = $worksheet->getCellByColumnAndRow(3, $row)->getValue();//nama
                 $kolom4 = $worksheet->getCellByColumnAndRow(4, $row)->getValue();//email
                 $kolom5 = $worksheet->getCellByColumnAndRow(5, $row)->getValue();//group
 				$kolom6 = $worksheet->getCellByColumnAndRow(6, $row)->getValue();//keterangan
@@ -82,6 +82,7 @@ class Peserta_import extends Member_Controller {
                 if(empty($kolom5)){ $kosong++; }
                 
                 if($kosong==0){
+					$kolom3 = ucwords(addslashes($kolom3));
                     if($this->cbt_user_grup_model->count_by_kolom('grup_nama', $kolom5)->row()->hasil>0){
                     	if($this->cbt_user_model->count_by_kolom('user_name', $kolom1)->row()->hasil>0){
                     		$pesan=$pesan.$kolom1.' - '.$kolom3.' sudah digunakan <br>';

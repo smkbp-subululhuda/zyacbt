@@ -8,9 +8,6 @@
 class Cbt_user_grup_model extends CI_Model{
 	public $table = 'cbt_user_grup';
 	
-	function __construct(){
-        parent::__construct();
-    }
 	
     function save($data){
         $this->db->insert($this->table, $data);

@@ -2,9 +2,6 @@
 class Cbt_soal_model extends CI_Model{
 	public $table = 'cbt_soal';
 	
-	function __construct(){
-        parent::__construct();
-    }
 	
     function save($data){
         $this->db->insert($this->table, $data);

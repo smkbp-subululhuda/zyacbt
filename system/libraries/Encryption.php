@@ -6,7 +6,7 @@
  *
  * This content is released under the MIT License (MIT)
  *
- * Copyright (c) 2014 - 2019, British Columbia Institute of Technology
+ * Copyright (c) 2019 - 2022, CodeIgniter Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,7 @@
  * @author	EllisLab Dev Team
  * @copyright	Copyright (c) 2008 - 2014, EllisLab, Inc. (https://ellislab.com/)
  * @copyright	Copyright (c) 2014 - 2019, British Columbia Institute of Technology (https://bcit.ca/)
+ * @copyright	Copyright (c) 2019 - 2022, CodeIgniter Foundation (https://codeigniter.com/)
  * @license	https://opensource.org/licenses/MIT	MIT License
  * @link	https://codeigniter.com
  * @since	Version 3.0.0
@@ -46,7 +47,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @subpackage	Libraries
  * @category	Libraries
  * @author		Andrey Andreev
- * @link		https://codeigniter.com/user_guide/libraries/encryption.html
+ * @link		https://codeigniter.com/userguide3/libraries/encryption.html
  */
 class CI_Encryption {
 
@@ -161,7 +162,7 @@ class CI_Encryption {
 			show_error('Encryption: Unable to find an available encryption driver.');
 		}
 
-		isset(self::$func_overload) OR self::$func_overload = (extension_loaded('mbstring') && ini_get('mbstring.func_overload'));
+		isset(self::$func_overload) OR self::$func_overload = ( ! is_php('8.0') && extension_loaded('mbstring') && @ini_get('mbstring.func_overload'));
 		$this->initialize($params);
 
 		if ( ! isset($this->_key) && self::strlen($key = config_item('encryption_key')) > 0)
@@ -365,10 +366,10 @@ class CI_Encryption {
 	 * Encrypt
 	 *
 	 * @param	string	$data	Input data
-	 * @param	array	$params	Input parameters
+	 * @param	array|null	$params	Input parameters
 	 * @return	string
 	 */
-	public function encrypt($data, array $params = NULL)
+	public function encrypt($data, $params = NULL)
 	{
 		if (($params = $this->_get_params($params)) === FALSE)
 		{
@@ -476,13 +477,13 @@ class CI_Encryption {
 
 		$iv = ($iv_size = openssl_cipher_iv_length($params['handle']))
 			? $this->create_key($iv_size)
-			: NULL;
+			: '';
 
 		$data = openssl_encrypt(
 			$data,
 			$params['handle'],
 			$params['key'],
-			1, // DO NOT TOUCH!
+			OPENSSL_RAW_DATA,
 			$iv
 		);
 
@@ -500,10 +501,10 @@ class CI_Encryption {
 	 * Decrypt
 	 *
 	 * @param	string	$data	Encrypted data
-	 * @param	array	$params	Input parameters
+	 * @param	array|null	$params	Input parameters
 	 * @return	string
 	 */
-	public function decrypt($data, array $params = NULL)
+	public function decrypt($data, $params = NULL)
 	{
 		if (($params = $this->_get_params($params)) === FALSE)
 		{
@@ -585,7 +586,7 @@ class CI_Encryption {
 		}
 		else
 		{
-			$iv = NULL;
+			$iv = '';
 		}
 
 		if (mcrypt_generic_init($params['handle'], $params['key'], $iv) < 0)
@@ -632,7 +633,7 @@ class CI_Encryption {
 		}
 		else
 		{
-			$iv = NULL;
+			$iv = '';
 		}
 
 		return empty($params['handle'])
@@ -641,7 +642,7 @@ class CI_Encryption {
 				$data,
 				$params['handle'],
 				$params['key'],
-				1, // DO NOT TOUCH!
+				OPENSSL_RAW_DATA,
 				$iv
 			);
 	}
@@ -910,8 +911,8 @@ class CI_Encryption {
 	protected static function strlen($str)
 	{
 		return (self::$func_overload)
-			? mb_strlen($str, '8bit')
-			: strlen($str);
+			? mb_strlen((string) $str, '8bit')
+			: strlen((string) $str);
 	}
 
 	// --------------------------------------------------------------------
@@ -928,9 +929,6 @@ class CI_Encryption {
 	{
 		if (self::$func_overload)
 		{
-			// mb_substr($str, $start, null, '8bit') returns an empty
-			// string on PHP 5.3
-			isset($length) OR $length = ($start >= 0 ? self::strlen($str) - $start : -$start);
 			return mb_substr($str, $start, $length, '8bit');
 		}
 

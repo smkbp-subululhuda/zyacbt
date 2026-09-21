@@ -39,7 +39,7 @@
                     <div class="box-title">Import Soal dari Spreadsheet</div>
 					<div class="box-tools pull-right">
 						<div class="dropdown pull-right">
-							<a href="<?php echo base_url(); ?>public/form/form-soal-ganda.xls">Form Excel Soal Pilihan Ganda</a>
+							<a href="<?php echo base_url(); ?>public/form/form-soal-ganda.xlsx">Form Excel Soal Pilihan Ganda</a>
     					</div>
     				</div>
                 </div><!-- /.box-header -->
@@ -50,8 +50,7 @@
                         <label>Pilih File</label>
                         <input type="file" id="userfile" name="userfile">
 						<p class="help-block">Soal yang dapat import adalah soal jenis Pilihan ganda. Tidak dapat melakukan import soal yang terdapat gambar atau audio.</p>
-                        <p class="help-block">File Excel yang didukung adalah Microsoft Excel 2003 dan Microsoft Excel 2007</p>
-                        <p class="help-block">SAVE AS ke Office 2007 jika gagal mengupload data dalam format Office 2003</p>
+                        <p class="help-block">File Excel yang didukung adalah Microsoft Excel 2007</p>
 					</div>
                 </div>
                 <div class="box-footer">

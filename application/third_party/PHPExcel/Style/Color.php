@@ -386,9 +386,9 @@ class PHPExcel_Style_Color implements PHPExcel_IComparable
 		if ($blue < 0) $blue = 0;
 		elseif ($blue > 255) $blue = 255;
 
-		return strtoupper(	str_pad(dechex($red), 2, '0', 0) .
-							str_pad(dechex($green), 2, '0', 0) .
-							str_pad(dechex($blue), 2, '0', 0)
+		return strtoupper(	str_pad(dechex(intval($red)), 2, '0', 0) .
+							str_pad(dechex(intval($green)), 2, '0', 0) .
+							str_pad(dechex(intval($blue)), 2, '0', 0)
 						 );
 	}
 

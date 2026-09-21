@@ -6,7 +6,7 @@
  *
  * This content is released under the MIT License (MIT)
  *
- * Copyright (c) 2014 - 2019, British Columbia Institute of Technology
+ * Copyright (c) 2019 - 2022, CodeIgniter Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,7 @@
  * @author	EllisLab Dev Team
  * @copyright	Copyright (c) 2008 - 2014, EllisLab, Inc. (https://ellislab.com/)
  * @copyright	Copyright (c) 2014 - 2019, British Columbia Institute of Technology (https://bcit.ca/)
+ * @copyright	Copyright (c) 2019 - 2022, CodeIgniter Foundation (https://codeigniter.com/)
  * @license	https://opensource.org/licenses/MIT	MIT License
  * @link	https://codeigniter.com
  * @since	Version 1.0.0
@@ -44,7 +45,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @subpackage	Libraries
  * @category	Security
  * @author		EllisLab Dev Team
- * @link		https://codeigniter.com/user_guide/libraries/security.html
+ * @link		https://codeigniter.com/userguide3/libraries/security.html
  */
 class CI_Security {
 
@@ -169,10 +170,12 @@ class CI_Security {
 	 *
 	 * @return	void
 	 */
-	public function __construct()
+	public function __construct($charset)
 	{
+		$this->charset = $charset;
+
 		// Is CSRF protection enabled?
-		if (config_item('csrf_protection'))
+		if (config_item('csrf_protection') && ! is_cli())
 		{
 			// CSRF config
 			foreach (array('csrf_expire', 'csrf_token_name', 'csrf_cookie_name') as $key)
@@ -191,9 +194,8 @@ class CI_Security {
 
 			// Set the CSRF hash
 			$this->_csrf_set_hash();
+			$this->csrf_verify();
 		}
-
-		$this->charset = strtoupper(config_item('charset'));
 
 		log_message('info', 'Security Class Initialized');
 	}
@@ -272,15 +274,35 @@ class CI_Security {
 			return FALSE;
 		}
 
-		setcookie(
-			$this->_csrf_cookie_name,
-			$this->_csrf_hash,
-			$expire,
-			config_item('cookie_path'),
-			config_item('cookie_domain'),
-			$secure_cookie,
-			config_item('cookie_httponly')
-		);
+		if (is_php('7.3'))
+		{
+			setcookie(
+				$this->_csrf_cookie_name,
+				$this->_csrf_hash,
+				array(
+					'expires'  => $expire,
+					'path'     => config_item('cookie_path'),
+					'domain'   => config_item('cookie_domain'),
+					'secure'   => $secure_cookie,
+					'httponly' => config_item('cookie_httponly'),
+					'samesite' => 'Strict'
+				)
+			);
+		}
+		else
+		{
+			$domain = trim(config_item('cookie_domain'));
+			header('Set-Cookie: '.$this->_csrf_cookie_name.'='.$this->_csrf_hash
+					.'; Expires='.gmdate('D, d-M-Y H:i:s T', $expire)
+					.'; Max-Age='.$this->_csrf_expire
+					.'; Path='.implode('/', array_map('rawurlencode', explode('/', config_item('cookie_path'))))
+					.($domain === '' ? '' : '; Domain='.$domain)
+					.($secure_cookie ? '; Secure' : '')
+					.(config_item('cookie_httponly') ? '; HttpOnly' : '')
+					.'; SameSite=Strict'
+			);
+		}
+
 		log_message('info', 'CSRF cookie sent');
 
 		return $this;
@@ -635,11 +657,10 @@ class CI_Security {
 			return $output;
 		}
 
-
 		if (is_readable('/dev/urandom') && ($fp = fopen('/dev/urandom', 'rb')) !== FALSE)
 		{
 			// Try not to waste entropy ...
-			is_php('5.4') && stream_set_chunk_size($fp, $length);
+			stream_set_chunk_size($fp, $length);
 			$output = fread($fp, $length);
 			fclose($fp);
 			if ($output !== FALSE)
@@ -669,7 +690,7 @@ class CI_Security {
 	 * correctly. html_entity_decode() does not convert entities without
 	 * semicolons, so we are left with our own little solution here. Bummer.
 	 *
-	 * @link	http://php.net/html-entity-decode
+	 * @link	https://secure.php.net/html-entity-decode
 	 *
 	 * @param	string	$str		Input
 	 * @param	string	$charset	Character set
@@ -684,26 +705,8 @@ class CI_Security {
 
 		static $_entities;
 
-		isset($charset) OR $charset = $this->charset;
-		$flag = is_php('5.4')
-			? ENT_COMPAT | ENT_HTML5
-			: ENT_COMPAT;
-
-		if ( ! isset($_entities))
-		{
-			$_entities = array_map('strtolower', get_html_translation_table(HTML_ENTITIES, $flag, $charset));
-
-			// If we're not on PHP 5.4+, add the possibly dangerous HTML 5
-			// entities to the array manually
-			if ($flag === ENT_COMPAT)
-			{
-				$_entities[':'] = '&colon;';
-				$_entities['('] = '&lpar;';
-				$_entities[')'] = '&rpar;';
-				$_entities["\n"] = '&NewLine;';
-				$_entities["\t"] = '&Tab;';
-			}
-		}
+		isset($charset)   OR $charset = $this->charset;
+		isset($_entities) OR $_entities = array_map('strtolower', get_html_translation_table(HTML_ENTITIES, ENT_COMPAT | ENT_HTML5, $charset));
 
 		do
 		{
@@ -728,14 +731,9 @@ class CI_Security {
 			// Decode numeric & UTF16 two byte entities
 			$str = html_entity_decode(
 				preg_replace('/(&#(?:x0*[0-9a-f]{2,5}(?![0-9a-f;])|(?:0*\d{2,4}(?![0-9;]))))/iS', '$1;', $str),
-				$flag,
+				ENT_COMPAT | ENT_HTML5,
 				$charset
 			);
-
-			if ($flag === ENT_COMPAT)
-			{
-				$str = str_replace(array_values($_entities), array_keys($_entities), $str);
-			}
 		}
 		while ($str_compare !== $str);
 		return $str;
@@ -1087,5 +1085,4 @@ class CI_Security {
 
 		return $this->_csrf_hash;
 	}
-
 }

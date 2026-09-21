@@ -1,9 +1,5 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 class Users_model extends CI_Model{	
-	function __construct(){
-		parent::__construct();
-	}
-    
     function save($data){
         $this->db->insert('user', $data);
     }
@@ -125,35 +121,38 @@ class Users_model extends CI_Model{
      * Mendapatkan menu dashboard secara dynamic 
      */ 
     function get_menu($kode_menu, $level){
-        $sql = 'SELECT user_menu.* FROM `user_akses` INNER JOIN `user_level` ON (`user_akses`.`level` = `user_level`.`level`) 
-            INNER JOIN `user_menu` ON (`user_akses`.`kode_menu` = `user_menu`.`kode_menu`) WHERE user_akses.`level`="'.$level.'"
-            GROUP BY `user_menu`.`parent` ORDER BY user_menu.parent ASC';
-        $result=$this->db->query($sql);
+        $this->db->select('user_menu.parent')
+                 ->where('(user_akses.level="'.$level.'")')
+				 ->join('user_menu', 'user_akses.kode_menu = user_menu.kode_menu')
+                 ->from('user_akses')
+				 ->group_by('user_menu.parent');
+		$result = $this->db->get()->result();
+		
+		// mendapatkan array menu
+		$data_menu = array();
+		foreach($result as $temp){
+			$data_menu[] = $temp->parent;
+		}
+		
+		$this->db->where_in('kode_menu', $data_menu)
+                 ->from('user_menu')
+				 ->order_by('urutan', 'ASC');
+		$result = $this->db->get();
         $parent_kode_menu = $this->get_parent_menu($kode_menu);
         
         $menu = '';
         
         if($result->num_rows()>0){
+			// mencari menu berdasarkan menu parent yang didapat
             foreach ($result->result() as $temp){
-                if(empty($temp->parent)){
-                    $parent = $this->get_menu_detail($temp->kode_menu)->row();
-                
-                    $parent_active='';
-                    if($parent->kode_menu==$parent_kode_menu){
-    					$parent_active=' active ';
-    				}
-                }else{
-                    $parent = $this->get_menu_detail($temp->parent)->row();
-                
-                    $parent_active='';
-                    if($parent->kode_menu==$parent_kode_menu){
-    					$parent_active=' active ';
-    				}
-                }
+                $parent_active='';
+                if($temp->kode_menu==$parent_kode_menu){
+					$parent_active=' active ';
+    			}
                 
                 $sql_child = 'SELECT user_menu.* FROM `user_akses` INNER JOIN `user_level` ON (`user_akses`.`level` = `user_level`.`level`) 
                     INNER JOIN `user_menu` ON (`user_akses`.`kode_menu` = `user_menu`.`kode_menu`) WHERE user_akses.`level`="'.$level.'" 
-                    AND user_menu.`tipe`=1 AND user_menu.parent="'.$parent->kode_menu.'" ORDER BY user_menu.`urutan` ASC';
+                    AND user_menu.`tipe`=1 AND user_menu.parent="'.$temp->kode_menu.'" ORDER BY user_menu.`urutan` ASC';
                 $result_child = $this->db->query($sql_child);
                 
                 $menu_child = '';
@@ -176,9 +175,9 @@ class Users_model extends CI_Model{
                 
                 $menu = $menu.'
                     <li class="treeview '.$parent_active.'">
-                        <a href="'.site_url().'/'.$parent->url.'">
-        					<i class="'.$parent->icon.'"></i>
-        					<span>'.$parent->nama_menu.'</span>';
+                        <a href="'.site_url().'/'.$temp->url.'">
+        					<i class="'.$temp->icon.'"></i>
+        					<span>'.$temp->nama_menu.'</span>';
                 if($menu_child_count>0){
                     $menu = $menu.'<i class="fa fa-angle-left pull-right"></i>';
                 }

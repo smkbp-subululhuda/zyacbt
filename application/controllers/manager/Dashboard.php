@@ -12,6 +12,7 @@ class Dashboard extends Member_Controller {
         $data['post_max_size'] = ini_get('post_max_size');
         $data['upload_max_filesize'] = ini_get('upload_max_filesize');
         $data['waktu_server'] = date('Y-m-d H:i:s');
+		$data['timezone'] = date_default_timezone_get();
 
         $dir1 = './public/uploads/';
         $dir2 = './uploads/';

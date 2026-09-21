@@ -2,9 +2,6 @@
 class Cbt_modul_model extends CI_Model{
 	public $table = 'cbt_modul';
 	
-	function __construct(){
-        parent::__construct();
-    }
 	
     function save($data){
         $this->db->insert($this->table, $data);

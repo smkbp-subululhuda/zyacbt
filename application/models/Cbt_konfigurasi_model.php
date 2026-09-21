@@ -2,10 +2,6 @@
 class Cbt_konfigurasi_model extends CI_Model{
 	public $table = 'cbt_konfigurasi';
 	
-	function __construct(){
-        parent::__construct();
-    }
-	
     function save($data){
         $this->db->insert($this->table, $data);
     }

@@ -6,7 +6,7 @@
  *
  * This content is released under the MIT License (MIT)
  *
- * Copyright (c) 2014 - 2019, British Columbia Institute of Technology
+ * Copyright (c) 2019 - 2022, CodeIgniter Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,7 @@
  * @author	EllisLab Dev Team
  * @copyright	Copyright (c) 2008 - 2014, EllisLab, Inc. (https://ellislab.com/)
  * @copyright	Copyright (c) 2014 - 2019, British Columbia Institute of Technology (https://bcit.ca/)
+ * @copyright	Copyright (c) 2019 - 2022, CodeIgniter Foundation (https://codeigniter.com/)
  * @license	https://opensource.org/licenses/MIT	MIT License
  * @link	https://codeigniter.com
  * @since	Version 1.0.0
@@ -44,35 +45,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @subpackage	Helpers
  * @category	Helpers
  * @author		EllisLab Dev Team
- * @link		https://codeigniter.com/user_guide/helpers/string_helper.html
+ * @link		https://codeigniter.com/userguide3/helpers/string_helper.html
  */
-
-// ------------------------------------------------------------------------
-
-if ( ! function_exists('trim_slashes'))
-{
-	/**
-	 * Trim Slashes
-	 *
-	 * Removes any leading/trailing slashes from a string:
-	 *
-	 * /this/that/theother/
-	 *
-	 * becomes:
-	 *
-	 * this/that/theother
-	 *
-	 * @todo	Remove in version 3.1+.
-	 * @deprecated	3.0.0	This is just an alias for PHP's native trim()
-	 *
-	 * @param	string
-	 * @return	string
-	 */
-	function trim_slashes($str)
-	{
-		return trim($str, '/');
-	}
-}
 
 // ------------------------------------------------------------------------
 
@@ -197,7 +171,7 @@ if ( ! function_exists('random_string'))
 	/**
 	 * Create a "Random" String
 	 *
-	 * @param	string	type of random string.  basic, alpha, alnum, numeric, nozero, unique, md5, encrypt and sha1
+	 * @param	string	type of random string.  basic, alpha, alnum, numeric, nozero, md5 and sha1
 	 * @param	int	number of characters
 	 * @return	string
 	 */
@@ -227,10 +201,8 @@ if ( ! function_exists('random_string'))
 						break;
 				}
 				return substr(str_shuffle(str_repeat($pool, ceil($len / strlen($pool)))), 0, $len);
-			case 'unique': // todo: remove in 3.1+
 			case 'md5':
 				return md5(uniqid(mt_rand()));
-			case 'encrypt': // todo: remove in 3.1+
 			case 'sha1':
 				return sha1(uniqid(mt_rand(), TRUE));
 		}
@@ -280,25 +252,5 @@ if ( ! function_exists('alternator'))
 
 		$args = func_get_args();
 		return $args[($i++ % count($args))];
-	}
-}
-
-// ------------------------------------------------------------------------
-
-if ( ! function_exists('repeater'))
-{
-	/**
-	 * Repeater function
-	 *
-	 * @todo	Remove in version 3.1+.
-	 * @deprecated	3.0.0	This is just an alias for PHP's native str_repeat()
-	 *
-	 * @param	string	$data	String to repeat
-	 * @param	int	$num	Number of repeats
-	 * @return	string
-	 */
-	function repeater($data, $num = 1)
-	{
-		return ($num > 0) ? str_repeat($data, $num) : '';
 	}
 }

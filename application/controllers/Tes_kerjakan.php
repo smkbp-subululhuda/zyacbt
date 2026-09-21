@@ -47,52 +47,71 @@ class Tes_kerjakan extends Tes_Controller {
                     // jika waktu sudah melebihi waktu ketentuan, maka diarahkan ke dashboard
                     redirect('tes_dashboard');
                 }else{
-                    // mengambil soal sesuai dengan tes yang dikerjakan
-                    $data['tes_id'] = $tes_id;
-                    $data['tes_user_id'] = $query_tes->tesuser_id;
-                    $data['tes_name'] = $query_tes->tes_nama;
-                    $data['tes_waktu'] = $query_tes->tes_duration_time;
-                    $data['tes_dibuat'] = $query_tes->tesuser_creation_time;
-                    $data['tanggal'] = $tanggal->format('Y-m-d H:i:s');
+					$is_ok = true;
+					// Apakah token aktif pada tes
+					if($query_tes->tes_token==1){
+						// Jika tidak token tersedia di session
+						if(!$this->access_tes->is_token()){
+							$is_ok= false;
+							
+							$data['tes_id'] = $tes_id;
+							$data['tes_nama'] = $query_tes->tes_nama;
+							$data['tes_detail'] = $query_tes->tes_detail;
+							
+							// menampilkan halaman entry token
+							$this->template->display_tes($this->kelompok.'/tes_lanjutkan_view', 'Lanjutkan Tes', $data);	
+						}
+					}
+					
+					// Jika pengecekan token selesai
+					if($is_ok){
+						// mengambil soal sesuai dengan tes yang dikerjakan
+						$data['tes_id'] = $tes_id;
+						$data['tes_user_id'] = $query_tes->tesuser_id;
+						$data['tes_name'] = $query_tes->tes_nama;
+						$data['tes_waktu'] = $query_tes->tes_duration_time;
+						$data['tes_dibuat'] = $query_tes->tesuser_creation_time;
+						$data['tanggal'] = $tanggal->format('Y-m-d H:i:s');
 
-                    // Mengambil selisih jam
-                    $tanggal_tes = new DateTime($query_tes->tesuser_creation_time);
-                    $tanggal_diff = $tanggal_tes->diff($tanggal);
+						// Mengambil selisih jam
+						$tanggal_tes = new DateTime($query_tes->tesuser_creation_time);
+						$tanggal_diff = $tanggal_tes->diff($tanggal);
 
-                    $detik_berjalan = ($tanggal_diff->h*60*60)+($tanggal_diff->i*60)+$tanggal_diff->s;
-                    $detik_total = $query_tes->tes_duration_time*60;
+						$detik_berjalan = ($tanggal_diff->h*60*60)+($tanggal_diff->i*60)+$tanggal_diff->s;
+						$detik_total = $query_tes->tes_duration_time*60;
 
-                    // untuk menangani Jika tes setelah ditambah waktunya melebihi jam saat itu
-                    // jika time saat ini lebih besar dari time creation
-                    if($tanggal>=$tanggal_tes){
-                        $detik_sisa = $detik_total-$detik_berjalan;
-                    
-                    // jika time creation lebih besar dari tanggal saat ini
-                    }else{
-                        $detik_sisa = $detik_total+$detik_berjalan;
-                    }
+						// untuk menangani Jika tes setelah ditambah waktunya melebihi jam saat itu
+						// jika time saat ini lebih besar dari time creation
+						if($tanggal>=$tanggal_tes){
+							$detik_sisa = $detik_total-$detik_berjalan;
+						
+						// jika time creation lebih besar dari tanggal saat ini
+						}else{
+							$detik_sisa = $detik_total+$detik_berjalan;
+						}
 
-                    $data['detik_berjalan'] = $detik_berjalan;
-                    $data['detik_total'] = $detik_total;
-                    $data['detik_sisa'] = $detik_sisa;
+						$data['detik_berjalan'] = $detik_berjalan;
+						$data['detik_total'] = $detik_total;
+						$data['detik_sisa'] = $detik_sisa;
 
-                    // Mengambil menu daftar semua soal
-                    $data_soal = $this->get_daftar_soal($tes_id);
+						// Mengambil menu daftar semua soal
+						$data_soal = $this->get_daftar_soal($tes_id);
 
-                    $data['tes_daftar_soal'] = $data_soal['tes_soal'];
-                    $data['tes_soal_jml'] = $data_soal['tes_soal_jml'];
+						$data['tes_daftar_soal'] = $data_soal['tes_soal'];
+						$data['tes_soal_jml'] = $data_soal['tes_soal_jml'];
 
-                    // Mengambil data soal ke 1
-                    $tessoal = $this->cbt_tes_soal_model->get_by_testuser_limit($query_tes->tesuser_id, 1)->row();
-                    $data_soal = $this->get_soal($tessoal->tessoal_id, $query_tes->tesuser_id);
+						// Mengambil data soal ke 1
+						$tessoal = $this->cbt_tes_soal_model->get_by_testuser_limit($query_tes->tesuser_id, 1)->row();
+						$data_soal = $this->get_soal($tessoal->tessoal_id, $query_tes->tesuser_id);
 
-                    $data['tes_soal'] = $data_soal['tes_soal'];
-                    $data['tes_ragu'] = $data_soal['tes_ragu'];
-                    $data['tes_soal_id'] = $tessoal->tessoal_id;
-                    $data['tes_soal_nomor'] = $tessoal->tessoal_order;
+						$data['tes_soal'] = $data_soal['tes_soal'];
+						$data['tes_ragu'] = $data_soal['tes_ragu'];
+						$data['tes_soal_id'] = $tessoal->tessoal_id;
+						$data['tes_soal_nomor'] = $tessoal->tessoal_order;
 
-                    
-                    $this->template->display_tes($this->kelompok.'/tes_kerjakan_view', 'Kerjakan Tes', $data);
+						
+						$this->template->display_tes($this->kelompok.'/tes_kerjakan_view', 'Kerjakan Tes', $data);
+					}
                 }
             }else{
                 redirect('tes_dashboard');
@@ -101,6 +120,66 @@ class Tes_kerjakan extends Tes_Controller {
             redirect('tes_dashboard');
         }
     }
+	
+	function lanjutkan_tes(){
+		$this->load->library('form_validation');
+		
+		$this->form_validation->set_rules('tes-id', 'Tes','required|strip_tags');
+		$this->form_validation->set_rules('token', 'Token','required|strip_tags');
+		
+		if($this->form_validation->run() == TRUE){
+			$tes_id = $this->input->post('tes-id', TRUE);
+			$token = $this->input->post('token', TRUE);
+			
+			$is_ok = 0;
+			// pengecekan token apakah sesuai dengan yang dibuat operator
+			$query_token = $this->cbt_tes_token_model->get_by_token_now_limit($token, 1);
+			if($query_token->num_rows()>0){
+				$query_token = $query_token->row();
+				
+				// Mengecek token apakah dapat digunakan oleh semua TES
+				if($query_token->token_tes_id==0){
+					// Jika token dapat digunakan oleh semua TES
+					// token_aktif==1 maka berarti token aktif 1 hari
+					if($query_token->token_aktif==1){
+						$is_ok = 1;
+					}else{
+						if($this->cbt_tes_token_model->count_by_token_lifetime($token, $query_token->token_aktif)->row()->hasil>0){
+							$is_ok = 1;
+						}
+					}
+				}else{
+					// Jika token hanya spesifik untuk salah satu Tes
+					// token_aktif==1 maka berarti token aktif 1 hari
+					if($query_token->token_tes_id==$tes_id){
+						if($query_token->token_aktif==1){
+							$is_ok = 1;
+						}else{
+							if($this->cbt_tes_token_model->count_by_token_lifetime($token, $query_token->token_aktif)->row()->hasil>0){
+								$is_ok = 1;
+							}
+						}
+					}
+				}
+			}
+			// Jika Cek Token berhasil
+			if($is_ok==1){
+				// Memasukkan token ke session
+				$this->session->set_userdata('cbt_tes_token', $token);
+				
+				$status['status'] = 1;
+                $status['pesan'] = "Tes berhasil dilanjutkan";   
+			}else{
+				$status['status'] = 0;
+                $status['pesan'] = "Silahkan cek Token yang dimasukkan";
+			}
+		}else{
+			$status['status'] = 0;
+			$status['pesan'] = "Token Tidak Boleh Kosong";
+		}
+		
+		echo json_encode($status);
+	}
 
     /**
      * Menghentikan tes yang sudah berjalan
@@ -441,7 +520,7 @@ class Tes_kerjakan extends Tes_Controller {
                         if($query_soal->tessoal_audio_play==0){
                             $posisi = $this->config->item('upload_path').'/topik_'.$query_soal->soal_topik_id;
                             $soal = $soal.'
-                                <audio volume="1.0" id="audio-player" onended="audio_ended(\''.$audio_play.'\')">
+                                <audio controlsList="nodownload" volume="1.0" id="audio-player" onended="audio_ended(\''.$audio_play.'\')">
                                   <source src="'.base_url().$posisi.'/'.$query_soal->soal_audio.'" type="audio/mpeg">
                                     Your browser does not support the audio element.
                                 </audio>

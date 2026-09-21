@@ -294,7 +294,7 @@
                             notify_error("Gagal mengimport Soal, Silahkan Refresh Halaman");
                         }else{
                             $("#modal-proses").modal('hide');
-                            notify_error(textstatus);
+                            notify_error(message);
                         }
                     }
             });
